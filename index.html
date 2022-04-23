@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>evolving arc</title>
+	<style>
+		html, body {
+			width :100%;
+			height: 100%;
+			margin: 0;
+			pointer-events: none;
+			user-select: none;
+			background-color: #000;
+			overflow: hidden;
+		}
+		#scene {
+		  position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+	</style>
+</head>
+<body>
+	<canvas></canvas>
+	<script>
+		'use strict';
+		const canvas = document.querySelector('canvas'), ctx = canvas.getContext('2d'), HSL = (hue, lightness) => ctx.fillStyle = `hsl(${hue},100%,${lightness}%)`;
+		let ballSize;
+
+		const draw = time => {
+			ctx.globalCompositeOperation = 'screen';
+			for(let j = 20; j--;) {
+				ctx.fill();
+				ctx.beginPath();
+				ctx.arc(
+					ballSize / 2 * Math.sin(time + j),
+					ballSize / 2 * Math.tan(time / j - j),
+					ballSize,
+					ballSize,
+					ballSize / j
+				);
+				HSL(j * time, 30);
+				ctx.closePath();
+				ctx.stroke();
+			}
+		}
+
+		const render = (time) => {
+			const {innerWidth, innerHeight} = window;
+			canvas.width = innerWidth;
+			canvas.height = innerHeight;
+			ballSize = innerWidth / 15;
+			ctx.fillRect(0, 0, innerWidth, innerHeight);
+			ctx.translate(innerWidth / 2, innerHeight / 2);
+			requestAnimationFrame(render);
+			draw(time / 1000 + 8);
+		}
+
+		render(0);
+	</script>
+</body>
+</html>
+
